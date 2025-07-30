@@ -1,0 +1,173 @@
+<div class="space-y-8" wire:poll.5s>
+    <!-- Success/Error Messages -->
+    @if (session('success'))
+        <div class="p-4 bg-green-500/10 border border-green-500/30 text-green-300 rounded-lg" role="alert">
+            <p class="font-bold">Success!</p>
+            <p>{{ session('success') }}</p>
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="p-4 bg-red-500/10 border border-red-500/30 text-red-300 rounded-lg" role="alert">
+            <p class="font-bold">Error!</p>
+            <p>{{ session('error') }}</p>
+        </div>
+    @endif
+
+    <!-- Create New Batch Form with Correct Dark Theme -->
+    <div class="bg-[#2a3042] shadow-lg sm:rounded-lg">
+        <div class="p-6 border-b border-gray-700">
+            <h2 class="text-xl font-semibold text-white">Create New QR Code Batch</h2>
+            <p class="mt-1 text-sm text-gray-400">Generate a new set of unique QR codes for a specific campaign.</p>
+        </div>
+        <div class="p-6">
+            <form wire:submit="createBatch" class="space-y-6">
+                <div>
+                    <label for="selectedCampaignId" class="block text-sm font-medium text-gray-300">Select
+                        Campaign</label>
+                    <select wire:model="selectedCampaignId" id="selectedCampaignId"
+                        class="mt-1 block w-full rounded-md border-gray-600 bg-gray-900/50 text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        <option value="">-- Choose a campaign --</option>
+                        @foreach ($campaigns as $campaign)
+                            <option value="{{ $campaign->id }}">{{ $campaign->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('selectedCampaignId')
+                        <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div>
+                    <label for="batchName" class="block text-sm font-medium text-gray-300">Batch Name</label>
+                    <input wire:model="batchName" type="text" id="batchName"
+                        placeholder="e.g., Diwali Promo - 500g Packets"
+                        class="mt-1 block w-full rounded-md border-gray-600 bg-gray-900/50 text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    @error('batchName')
+                        <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div>
+                    <label for="quantity" class="block text-sm font-medium text-gray-300">Quantity</label>
+                    <input wire:model="quantity" type="number" id="quantity"
+                        class="mt-1 block w-full rounded-md border-gray-600 bg-gray-900/50 text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    @error('quantity')
+                        <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div>
+                    <button type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                        wire:loading.attr="disabled">
+                        <span wire:loading.remove wire:target="createBatch">Generate Batch</span>
+                        <span wire:loading wire:target="createBatch">Generating...</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- List of Existing Batches with Correct Dark Theme -->
+    <div class="flex flex-col mt-8">
+        <div class="overflow-x-auto">
+            <div class="inline-block min-w-full py-2 align-middle">
+                <div class="overflow-hidden shadow ring-1 ring-white ring-opacity-5 md:rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead class="bg-[#2a3042]">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                    Batch / Campaign</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                    Quantity</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                    Generated By</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                    Date (IST)</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                    PDF Status</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-[#2a3042] divide-y divide-gray-700">
+                            @forelse ($batches as $batch)
+                                <tr wire:key="batch-{{ $batch->id }}">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                                        {{ $batch->name }}
+                                        <span class="block text-xs text-gray-400">{{ $batch->campaign->name }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                                        {{ number_format($batch->quantity) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                                        {{ $batch->generator->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                                        {{ $batch->created_at->timezone('Asia/Kolkata')->format('d M Y, h:i A') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $batch->pdf_status === 'completed' ? 'bg-green-100 text-green-800' : ($batch->pdf_status === 'processing' || $batch->pdf_status === 'queued' ? 'bg-yellow-100 text-yellow-800' : ($batch->pdf_status === 'failed' ? 'bg-red-100 text-red-800' : 'bg-gray-200 text-gray-800')) }}">
+                                            {{ ucfirst($batch->pdf_status) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex items-center space-x-4">
+                                            @if ($batch->pdf_status === 'completed')
+                                                <a href="{{ route('qr.download.pdf', $batch) }}"
+                                                    class="text-gray-400 hover:text-indigo-400"
+                                                    title="Download PDF"><svg class="w-6 h-6" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4">
+                                                        </path>
+                                                    </svg></a>
+                                            @else
+                                                <a href="{{ route('qr.export.pdf', $batch) }}"
+                                                    class="text-gray-400 hover:text-indigo-400"
+                                                    title="Generate PDF"><svg class="w-6 h-6" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                                        </path>
+                                                    </svg></a>
+                                            @endif
+                                            <a href="{{ route('qr.export.csv', $batch) }}"
+                                                class="text-gray-400 hover:text-indigo-400"
+                                                title="Export Master List (CSV)"><svg class="w-6 h-6" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                                    </path>
+                                                </svg></a>
+                                            <a href="{{ route('qr.export.zip', $batch) }}"
+                                                class="text-gray-400 hover:text-indigo-400"
+                                                title="Export for Designers (ZIP)"><svg class="w-6 h-6"
+                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4">
+                                                    </path>
+                                                </svg></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-400">No batches
+                                        have been generated yet.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">
+                    {{ $batches->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
