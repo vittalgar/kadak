@@ -1,0 +1,41 @@
+@tailwind base;
+
+@layer base {
+  input,
+  select,
+  textarea {
+    @apply text-lg p-4;
+  }
+}
+
+@tailwind components;
+@tailwind utilities;
+
+/*
+|--------------------------------------------------------------------------
+| Color Theme Definitions
+|--------------------------------------------------------------------------
+|
+| This is where we define the actual HSL color values for our themes.
+| The `:root` section is the default (Light Theme).
+| The `.dark` section overrides these variables when the dark theme is active.
+|
+*/
+:root {
+    /* Light Theme Colors */
+    --bkg: 220 20% 98%; /* Background - Almost White */
+    --bkg-soft: 220 20% 95%; /* Soft Background - Light Gray */
+    --bkg-alt: 220 20% 100%; /* Alternate Background - White */
+
+    --fg: 220 10% 25%; /* Foreground/Text - Dark Gray */
+    --fg-soft: 220 10% 45%; /* Soft Foreground - Medium Gray */
+    --fg-alt: 220 10% 5%; /* Alternate Foreground - Near Black */
+
+    --border: 220 10% 85%; /* Border Color */
+
+    --primary: 259 96% 62%; /* Primary Action Color - Indigo */
+    --primary-fg: 0 0% 100%; /* Text on Primary Color - White */
+
+    --success: 145 63% 42%; /* Green */
+    --danger: 0 72% 51%; /* Red */
+}
