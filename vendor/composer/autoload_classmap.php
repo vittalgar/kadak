@@ -27,6 +27,7 @@ return array(
     'App\\Imports\\DealersImport' => $baseDir . '/app/Imports/DealersImport.php',
     'App\\Imports\\PrizesImport' => $baseDir . '/app/Imports/PrizesImport.php',
     'App\\Jobs\\GenerateQrPdfJob' => $baseDir . '/app/Jobs/GenerateQrPdfJob.php',
+    'App\\Jobs\\SendWinnerSms' => $baseDir . '/app/Jobs/SendWinnerSms.php',
     'App\\Livewire\\Admin\\AgentManager' => $baseDir . '/app/Livewire/Admin/AgentManager.php',
     'App\\Livewire\\Admin\\AgentPerformanceReport' => $baseDir . '/app/Livewire/Admin/AgentPerformanceReport.php',
     'App\\Livewire\\Admin\\AttachProducts' => $baseDir . '/app/Livewire/Admin/AttachProducts.php',

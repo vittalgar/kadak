@@ -669,6 +669,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'App\\Imports\\DealersImport' => __DIR__ . '/../..' . '/app/Imports/DealersImport.php',
         'App\\Imports\\PrizesImport' => __DIR__ . '/../..' . '/app/Imports/PrizesImport.php',
         'App\\Jobs\\GenerateQrPdfJob' => __DIR__ . '/../..' . '/app/Jobs/GenerateQrPdfJob.php',
+        'App\\Jobs\\SendWinnerSms' => __DIR__ . '/../..' . '/app/Jobs/SendWinnerSms.php',
         'App\\Livewire\\Admin\\AgentManager' => __DIR__ . '/../..' . '/app/Livewire/Admin/AgentManager.php',
         'App\\Livewire\\Admin\\AgentPerformanceReport' => __DIR__ . '/../..' . '/app/Livewire/Admin/AgentPerformanceReport.php',
         'App\\Livewire\\Admin\\AttachProducts' => __DIR__ . '/../..' . '/app/Livewire/Admin/AttachProducts.php',

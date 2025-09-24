@@ -129,8 +129,6 @@ class Dashboard extends Component
         $data = $prizeDistribution->pluck("count")->toArray();
         $labels = $prizeDistribution->pluck("prize_won")->toArray();
 
-
-
         $this->datasets = [
             'datasets' => [
                 [
